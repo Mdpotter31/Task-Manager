@@ -1,0 +1,79 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<PageTitle>Task Manager</PageTitle>
+
+
+
+    <div class="task-grid">
+        <div class="backlog task-column">
+            <h1>Backlog</h1>
+            <div id="backlogTasks" class="task-list"></div>
+        </div>
+
+        <div class="in-progress task-column">
+            <h1>In Progress</h1>
+            <div id="inProgressTasks" class="task-list"></div>
+        </div>
+
+        <div class="in-review task-column">
+            <h1>In Review</h1>
+            <div id="inReviewTasks" class="task-list"></div>
+        </div>
+
+        <div class="completed task-column">
+            <h1>Completed</h1>
+            <div id="completedTasks" class="task-list"></div>
+        </div>
+    </div>
+
+    <form id="createTaskForm">
+        <input type="text" id="taskName" placeholder="Task Name">
+        <button type="submit">Create Task</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize SortableJS for each task list
+        var options = {
+            group: 'shared', // Enable dragging between lists
+            animation: 150
+        };
+
+        new Sortable(document.getElementById('backlogTasks'), options);
+        new Sortable(document.getElementById('inProgressTasks'), options);
+        new Sortable(document.getElementById('inReviewTasks'), options);
+        new Sortable(document.getElementById('completedTasks'), options);
+
+        // Handle form submission to create new tasks
+        var createTaskForm = document.getElementById('createTaskForm');
+        createTaskForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var taskName = document.getElementById('taskName').value;
+            if (taskName.trim() !== '') {
+                var task = document.createElement('div');
+                task.className = 'task';
+                task.textContent = taskName;
+
+                // Add delete button to the task
+                var deleteButton = document.createElement('i');
+                deleteButton.className = 'fas fa-trash-alt';
+                deleteButton.style.float = 'right';
+                deleteButton.style.color = 'red';
+                deleteButton.style.cursor = 'pointer';
+                deleteButton.addEventListener('click', function () {
+                    task.remove();
+                });
+
+                task.appendChild(deleteButton);
+
+                document.getElementById('backlogTasks').appendChild(task);
+                document.getElementById('taskName').value = '';
+            }
+        });
+    });
+</script>
